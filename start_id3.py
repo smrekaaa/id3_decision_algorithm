@@ -21,12 +21,12 @@ except IOError:
 # ACTUAL START ---------------------------------------------------------------------------------------------------------
 
 # 1. Read the data
-df_data, nrows = fm.read_file(args.t)  # data set as dataframe and number of rows
+df_data, head, n_rows = fm.read_file(args.t)  # data set as dataframe and number of rows
 # print(df_data)
 
 # 2. Create main id3 object and set initial values
-main_id3 = id3.ID3("ID3 TABLE", df_data, nrows, args.m)
-print(main_id3.print_out())
+main_id3 = id3.ID3("ID3 TABLE", df_data, head, n_rows, args.m)
+main_id3.print_out()
 
 """
 3. Calculate entropies for each attribute/coulmn(-last)

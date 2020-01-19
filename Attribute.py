@@ -10,18 +10,16 @@ class Attribute:
         self.classes = classes      # Classes of main dataset
         self.values = []            # List of distinct values names
         self.sub_values = []        # List of all values' objects
-        self.groups = []            # Dictionary of grouped data by this attribut
+        self.groups = {}            # Dictionary of grouped data by this attribut
         self.IA = 0                 # Average information entropy of the attribute
         self.GA = 0                 # Information gain of the attribute
         self.ES = ES                # Main dataset entropy
         self.T = T                  # Total number of rows
-        #self.distinct_values = {}   # ????? Dict. of distinct values and their counts for each class in sub dataset
         self.root = root            # Root node of the decision tree
         self.node = None            # Node of the attribute when known
 
         # Setting some initial values
         self.set_values()
-        #self.set_dist_values()      # rabiš?
         self.set_groups()
         self.set_avg_info_entropy()
         self.set_gain()
@@ -84,10 +82,10 @@ class Attribute:
         """
         Prints out the objet data
         """
-        print("Name: " + self.name +
+        print(  "ATTRIBUTE:" +
+                "\n -Name: " + self.name +
                 "\n - values: " + str(self.values) +
                 "\n - classes: " + str(self.classes) +
-                #"\n - distinct_values: " + str(self.distinct_values) +
                 "\n - grouped_dic: " + str(self.groups.groups) +
                 "\n - T: " + str(self.T) +
                 "\n - IA: " + str(self.IA) +

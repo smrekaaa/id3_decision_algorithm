@@ -1,4 +1,6 @@
 import calculations_id3 as cid3
+
+
 class SubAttribute:
 
     def __init__(self, name, data, classes, T):
@@ -12,6 +14,8 @@ class SubAttribute:
         self.TSA = len(data.index)    # Total number of sub attribute occurrance
 
         # Set values
+
+        # print(self.sub_data)
         self.set_class_counts()
         self.ESA = cid3.entropy(self.class_counts, self.TSA)
         self.print_out()
@@ -31,12 +35,22 @@ class SubAttribute:
         for i in range(len(counts)):
             self.class_counts[counts_indexes[i]] = counts[i]
 
+    def get_classification(self):
+        """
+        Return non zero class. Used for leaf nodes.
+        :return: class name
+        """
+        for c, count in self.class_counts.items():
+            if count != 0:
+                return c
+
     # PRINT OUT --------------------------------------------------------------------------------------------------------
     def print_out(self):
         """
         Prints out the objet data
         """
-        print("Name: " + self.name +
+        print(  "SUB ATTRIBUTE:" +
+                "\n - Name: " + str(self.name) +
                 "\n - classes: " + str(self.classes) +
                 "\n - class_counts: " + str(self.class_counts) +
                 "\n - ESA: " + str(self.ESA) +
