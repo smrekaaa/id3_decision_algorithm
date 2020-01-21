@@ -1,6 +1,8 @@
 import calculations_id3 as cid3
 import Attribute as att
 import Tree as tree
+import numpy as np
+
 
 class ID3:
 
@@ -107,6 +109,9 @@ class ID3:
         :param attributes: list of attributes
         :return: attribute
         """
+        if not attributes:
+            return None
+
         wanted_attribute = attributes[0]
         for a in attributes:
             if self.metric_type == 'entropy':
@@ -135,6 +140,15 @@ class ID3:
 
         return False
 
+    def check_purity(self, data):
+
+        class_column = self.header[-1]
+        unique = data[class_column].unique()
+
+        if len(unique) <= 1:
+            return True
+        return False
+
     def tree_create(self, dataset, parent):
         """
         RECURSION
@@ -143,67 +157,80 @@ class ID3:
         :param parent: parent node if exists
         """
 
-        # Check if all attributes are done
-        if self.header.sort == self.done_attributes.sort:
+        if self.check_purity(dataset) or len(dataset.index) < 2:
             return
+
+        # Check if is a leaf, is classified
+        if parent:
+            for c in self.classes:
+                if c == parent.name:
+                    return
 
         new_header = list(dataset.columns.values.tolist())  # Current dataset header
         print("New Header: " + str(new_header))
-
         attributes = []     # List of attributes objects and their values for current dataset
 
         # For each attribute
         for i in range(len(new_header)-1):
 
-            # Check if it was already done
-            if self.is_attribute_done(new_header[i]):
-                # Continue to next attribute
-                continue
-            else:
-                # Create new attribute object
-                new_att = att.Attribute(new_header[i], dataset, self.classes, self.T, self.ES)
+            # Create new attribute object
+            new_att = att.Attribute(new_header[i], dataset, self.classes, self.T, self.ES)
 
-                # Add new attribute to the list
-                attributes.append(new_att)
+            # Add new attribute to the list
+            attributes.append(new_att)
 
-        """OK
-        print("Ganis: ")
+        print("Gains: ")
         for a in attributes:
             print("Name: " + str(a.name) + ", gain: " + str(a.GA))
-        print()"""
+        print()
+
         # Get the attribute with min/max gain
         print("Wanted attribute")
         winner_attribute = self.get_gain_att(attributes)
         winner_attribute.print_out()
 
-        # For every value/sub_attribute of winner attribute
-        children_nodes = []
-        for value in winner_attribute.sub_values:
-            value.print_out()
+        ## GROUP dataset based on winner attribute
+        # Group current dataset by winner attribute
+        grouped = dataset.groupby([winner_attribute.name])  # Dictionary of grouped datasets
 
-            # Check if value/sub_attribute has only one solution, if ESA == 0
-            if value.ESA == 0:
-                new_child = tree.MyNode(value.get_classification(), value.name)
-            else:
-                new_child = tree.MyNode(None, value.name)
-
-            children_nodes.append(new_child)
-
-        # Add childeren nodes to the parent
+        ## Nastavi nov node
         # Check if parent exists
-        if not parent:
+
+        node = parent
+        if not node:
             # create root node
-            self.root = tree.MyNode(winner_attribute.name, children=children_nodes)
+            node = tree.MyNode(name=winner_attribute.name)
+            self.root = node
         else:
             # append nodes to the parent
-            parent.children = children_nodes
+            node.name = winner_attribute.name
+
+        ## Iterate over attribte values if it has any
+        values_len = len(winner_attribute.sub_values)
+        if values_len > 0:
+            for value in winner_attribute.sub_values:
+
+                new_child = tree.MyNode(value=value.name, parent=node)
+                if value.ESA == 0:
+                    new_child.name = value.get_classification()
+                    continue        # Jump on net value, cause it does not need to split anymore
+                if value.ESA == 1:
+                    print("ESA1")
+                    new_child.parent = None
+                    continue
+                print("new child: " + str(new_child.name) + ", value: " + str(new_child.value))
+
+                print("SUB DATASET:")
+                # remove column of winner attribute
+                sub_dataset = grouped.get_group(value.name)
+                del sub_dataset[winner_attribute.name]
+                print(sub_dataset)
+
+                self.tree_create(sub_dataset, new_child)
 
         self.root.print_out()
-
-
-
-
-
+        # add attribute to done.
+        # self.done_attributes.append(winner_attribute.name)
 
     # PRINT OUT --------------------------------------------------------------------------------------------------------
     def print_out(self):

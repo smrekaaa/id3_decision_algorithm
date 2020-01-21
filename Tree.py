@@ -6,7 +6,7 @@ class MyNode(NodeMixin):
     """
     Custom class for nodes of a decision tree
     """
-    def __init__(self, name, value=None, parent=None, children=None):
+    def __init__(self, name=None, value=None, parent=None, children=None):
         super(MyNode, self).__init__()
         self.name = name                       # Name of the attribute or a class
         self.value = value                     # If root: None, else: one of attribute's value

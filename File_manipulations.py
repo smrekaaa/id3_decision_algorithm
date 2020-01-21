@@ -27,9 +27,15 @@ if __name__ == "__main__":
     print("Header: " + str(header))
     print("Header type: " + str(type(header)))
     print(header[0])
-    """grouped = df_data.groupby([header[0]])
+
+
+    grouped = df_data.groupby([header[0]])
     print(type(grouped.groups))  # dict
-    print(str(grouped.groups['high']))"""
+    header.remove(header[0])
+    sub_data = grouped.get_group('high')
+    sub_sub_data = sub_data[header]
+    print(str(sub_data))
+    print(str(sub_sub_data))
 
 
 
