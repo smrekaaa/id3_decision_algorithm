@@ -3,7 +3,7 @@ import calculations_id3 as cid3
 
 class SubAttribute:
 
-    def __init__(self, name, data, classes, T):
+    def __init__(self, name, data, classes):
         self.name = name              # Name of the sub attribute
         self.sub_data = data          # Sub dataset of attribute
         self.header = \
@@ -14,11 +14,8 @@ class SubAttribute:
         self.TSA = len(data.index)    # Total number of sub attribute occurrance
 
         # Set values
-
-        # print(self.sub_data)
         self.set_class_counts()
         self.ESA = cid3.entropy(self.class_counts, self.TSA)
-        self.print_out()
 
     def set_class_counts(self):
         """

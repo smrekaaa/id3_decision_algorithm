@@ -8,7 +8,7 @@ class MyNode(NodeMixin):
     """
     def __init__(self, name=None, value=None, parent=None, children=None):
         super(MyNode, self).__init__()
-        self.name = name                       # Name of the attribute or a class
+        self.name = name                       # Name of the attribute or a class(if leaf)
         self.value = value                     # If root: None, else: one of attribute's value
         self.parent = parent                   # Parent node, if root: None
         if children:                           # Children nodes, if leaf/attribute.value[x].EV == 0: None
@@ -19,4 +19,4 @@ class MyNode(NodeMixin):
 
         for pre, _, node in RenderTree(self):
             treestr = u"%s%s" % (pre, node.name)
-            print(treestr.ljust(8), node.value, node.parent)
+            print(treestr.ljust(8), node.value)

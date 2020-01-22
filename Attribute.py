@@ -23,23 +23,12 @@ class Attribute:
         self.set_groups()
         self.set_avg_info_entropy()
         self.set_gain()
-        self.print_out()
 
     def set_values(self):
         """
         Sets the list of unique values for the attribute
         """
         self.values = self.sub_data[self.name].unique()
-
-    """def set_dist_values(self):
-        Sets dictionary of distinct values and their counts
-
-        counts = self.sub_data[self.name].value_counts()                # List of counts
-        counts_indexes = counts.index                               # List of counted values
-
-        # Add values and their counts to the dictionary
-        for i in range(len(counts)):
-            self.distinct_values[counts_indexes[i]] = counts[i]"""
 
     def set_groups(self):
         """
@@ -53,7 +42,7 @@ class Attribute:
             data = self.groups.get_group((self.values[i]))         # Sub data set for the value
 
             # New object
-            new_sub_att = sa.SubAttribute(self.values[i], data, self.classes, self.T)
+            new_sub_att = sa.SubAttribute(self.values[i], data, self.classes)
 
             # Add new sub attribute to the list
             self.sub_values.append(new_sub_att)
